@@ -373,6 +373,27 @@
     if ((mediaId != nil) && (mediaId != (id)[NSNull null])) {
         playListItem.mediaId = mediaId;
     }
+
+    NSMutableArray <JWTrack *> *tracksArray = [[NSMutableArray alloc] init];
+    id tracks = item[@"tracks"];
+    if (tracks != nil) {
+        NSArray* tracksAr = (NSArray*)tracks;
+        if(tracksAr.count > 0) {
+            for (id item in tracksAr) {
+                NSString *file = [item objectForKey:@"file"];
+                NSString *label = [item objectForKey:@"label"];
+                NSString *kind = [item objectForKey:@"kind"];
+                BOOL defaultTrack = [[item objectForKey:@"defaultTrack"] boolValue];
+                JWTrack *track = [JWTrack trackWithFile:file label:label isDefault:defaultTrack];
+                track.kind = kind;
+                [tracksArray addObject:track];
+            }
+        }
+    }
+
+    if (tracksArray.count > 0) {
+        playListItem.tracks = tracksArray;
+    }
     
     id title = item[@"title"];
     if ((title != nil) && (title != (id)[NSNull null])) {
